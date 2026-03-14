@@ -177,8 +177,9 @@ class DabPumpsSwitch(CoordinatorEntity, SwitchEntity, DabPumpsEntity):
         if status is not None:
             self._update_attributes(status, force=True)
             self.async_write_ha_state()
-    
-    
+            await self._coordinator.async_request_refresh()
+
+
     async def async_turn_off(self, **kwargs) -> None:
         """
         Turn the entity off.
@@ -188,9 +189,11 @@ class DabPumpsSwitch(CoordinatorEntity, SwitchEntity, DabPumpsEntity):
         (code,value) = next(( (code,value) for code,value in self._dict.items() if code in SWITCH_VALUES_OFF or value in SWITCH_VALUES_OFF), None)
         if code is None:
             return
-        
+
         status = await self._coordinator.async_modify_data(self._status_key, self.entity_id, code=code, value=value)
         if status is not None:
             self._update_attributes(status, force=True)
+            self.async_write_ha_state()
+            await self._coordinator.async_request_refresh()
             self.async_write_ha_state()
     

@@ -173,3 +173,4 @@ class DabPumpsTime(CoordinatorEntity, TimeEntity, DabPumpsEntity):
         if status is not None:
             self._update_attributes(status, force=True)
             self.async_write_ha_state()
+            await self._coordinator.async_request_refresh()
